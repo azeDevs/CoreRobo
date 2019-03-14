@@ -5,8 +5,6 @@ import robo.abstracts.Kit
 import robo.systems.output.Status
 import robo.systems.terminal.Log
 import robo.utils.prSp
-import robo.utils.trueFuture
-import java.util.concurrent.CompletableFuture
 
 
 class Bot(vararg kits: Kit) {
@@ -20,24 +18,22 @@ class Bot(vararg kits: Kit) {
 
     fun startBot(keyFilename: String) {
         prSp("Initializing Connection ...")
-        core.session().connect(keyFilename).whenComplete({b, t ->
-            fun(connected: Boolean, t0: Throwable): CompletableFuture<Boolean> {
+        core.session().connect(keyFilename).whenComplete { connected, t0 ->
                 Log.err(t0)
-                if (connected) {
-                    core.output().setCurrentStatus(Status(0, "Initializing..."))
-                    core.terminal().logCoreOnline()
-                    core.session().init(core.input())
-                    core.pulse().onPulse(Runnable {
-                        core.session().onPulse(core.pulse().totalTime)
-                        core.output().onPulse(core.pulse().totalTime)
-                        core.input().onPulse(core.pulse().totalTime)
-                        core.data().onPulse(core.pulse().totalTime)
-                        core.terminal().onPulse(core.pulse().totalTime)
-                    })
-                }
-                return trueFuture
+                if (connected) initCoreSystems()
             }
+        }
+
+    private fun initCoreSystems() {
+        core.output().setCurrentStatus(Status(0, "Initializing..."))
+        core.terminal().logCoreOnline()
+        core.session().init(core.input())
+        core.pulse().onPulse(Runnable {
+            core.session().onPulse(core.pulse().totalTime)
+            core.output().onPulse(core.pulse().totalTime)
+            core.input().onPulse(core.pulse().totalTime)
+            core.data().onPulse(core.pulse().totalTime)
+            core.terminal().onPulse(core.pulse().totalTime)
         })
     }
-
 }

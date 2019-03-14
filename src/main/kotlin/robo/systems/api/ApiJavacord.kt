@@ -38,8 +38,8 @@ class ApiJavacord : RoboApi {
             Log.err(t0)
             this.api = api
             isConnected = true
-            this.api!!.addLostConnectionListener { event -> isConnected = false }
-            this.api!!.addReconnectListener { event -> isConnected = true }
+            this.api!!.addLostConnectionListener { isConnected = false }
+            this.api!!.addReconnectListener { isConnected = true }
             prLn("Connected\n")
             futureConnection.complete(isConnected)
         }

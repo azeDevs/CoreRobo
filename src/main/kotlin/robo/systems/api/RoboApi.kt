@@ -13,6 +13,6 @@ interface RoboApi {
 
     fun send(kitPost: KitPost): CompletableFuture<KitPost>
 
-    fun connect(key: String): CompletableFuture<Boolean>
+    fun connect(keyFilename: String): CompletableFuture<Boolean>
 
 }

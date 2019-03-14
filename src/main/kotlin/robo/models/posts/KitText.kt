@@ -1,8 +1,7 @@
 package robo.models.posts
 
 import robo.abstracts.Form
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * Handles pre/post formatting of text.
@@ -30,7 +29,7 @@ class KitText @JvmOverloads constructor(string: String = "") {
     }
 
     fun add(format: String, vararg strings: String): KitText {
-        sb.append(String.format(format, *strings as Array<Any>))
+        sb.append(String.format(format, *strings))
         return this
     }
 

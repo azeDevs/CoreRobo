@@ -9,7 +9,7 @@ class UserState(val user: User) : Pulse {
     val name: String
         get() = user.discriminatedName
 
-    override fun onPulse(currentPulse: Long) {
+    override fun onPulse(current: Long) {
 
     }
 }

@@ -5,13 +5,11 @@ import robo.utils.prLn
 
 class Param {
 
-    private var value: String
+    private var value: String = ""
 
-    val isInt: Boolean
-        get() = toInt() != null
+    val isInt: Boolean get() = toInt() != null
 
-    val isLong: Boolean
-        get() = toLong() != null
+    val isLong: Boolean get() = toLong() != null
 
     constructor() {
         this.value = "0"
@@ -41,7 +39,7 @@ class Param {
     }
 
     fun filtersTo(regex: String, comparison: String): Boolean {
-        return value!!.replace(regex.toRegex(), "").equals(comparison, ignoreCase = true)
+        return value.replace(regex.toRegex(), "").equals(comparison, ignoreCase = true)
     }
 
 
@@ -64,7 +62,7 @@ class Param {
     fun toInt(): Int? {
         var result: Int? = null
         try {
-            result = Integer.valueOf(value!!.replace("[^\\d]".toRegex(), ""))
+            result = Integer.valueOf(value.replace("[^\\d]".toRegex(), ""))
         } catch (e: NumberFormatException) {
             logParseFailure()
         }
@@ -78,7 +76,7 @@ class Param {
     fun toLong(): Long? {
         var result: Long? = null
         try {
-            result = java.lang.Long.valueOf(value!!.replace("[^\\d]".toRegex(), ""))
+            result = java.lang.Long.valueOf(value.replace("[^\\d]".toRegex(), ""))
         } catch (e: NumberFormatException) {
             logParseFailure()
         }
@@ -99,7 +97,7 @@ class Param {
     fun toDouble(): Double? {
         var result: Double? = null
         try {
-            result = java.lang.Double.valueOf(value!!.replace("[^\\d]".toRegex(), ""))
+            result = java.lang.Double.valueOf(value.replace("[^\\d]".toRegex(), ""))
         } catch (e: NumberFormatException) {
             logParseFailure()
         }

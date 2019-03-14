@@ -53,7 +53,7 @@ object Log {
 
     private fun setLoggingLevel(level: Level) = logger.setLevel(level)
 
-    fun err(t: Throwable) { if (t != null) logger.error(t.message, t) }
+    fun err(t: Throwable?) { if (t != null) logger.error(t.message, t) }
 
     fun warn(warning: String) { if (!warning.isEmpty()) logger.warn(warning) }
 

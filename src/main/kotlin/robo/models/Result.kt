@@ -7,13 +7,13 @@ class Result<T>(val entity: T, val name: String) : Comparable<T> {
         if (score == 0.0f)
             score = deltaScore
         else if (score != deltaScore) {
-            val lastScore = score!!.toInt()
+            val lastScore = score.toInt()
             this.score = (lastScore + deltaScore) / 2
         }
         return this
     }
 
-    override fun compareTo(o: T): Int {
+    override fun compareTo(other: T): Int {
         return score.toInt()
     }
 

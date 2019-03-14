@@ -1,5 +1,5 @@
 package robo.systems.pulse
 
 interface Pulse {
-    fun onPulse(currentPulse: Long)
+    fun onPulse(current: Long)
 }

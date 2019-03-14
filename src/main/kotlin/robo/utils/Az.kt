@@ -1,6 +1,5 @@
 package robo.utils
 
-import java.awt.SystemColor.text
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.nio.file.Paths
@@ -141,7 +140,7 @@ fun table(width: Int, vararg text: String): String {
     val column = StringBuilder()
     text.forEach { s ->
         column.append(s)
-        (0 until width - s.length).forEach { n -> column.append(" ") }
+        (0 until width - s.length).forEach { column.append(" ") }
     }
     return column.toString()
 }

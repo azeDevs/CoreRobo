@@ -23,13 +23,12 @@ abstract class Kit(private var title: String) {
     private var query: String = ""
     private var brief: String = ""
     private var guide: String = ""
-    protected val requiredPermissions: Set<PermissionType> = HashSet()
-    private var kits: MutableSet<Kit> = HashSet()
-    val subKits: Set<Kit> get() = kits
+    private val requiredPermissions: MutableSet<PermissionType> = HashSet()
+    private var subKits: MutableSet<Kit> = HashSet()
 
-    fun getQuery(): String {
-        return query
-    }
+    fun getSubKits(): MutableSet<Kit> = subKits
+
+    fun getQuery(): String { return query }
 
     fun getTitle(): String {
         return title
@@ -64,12 +63,11 @@ abstract class Kit(private var title: String) {
     }
 
     protected fun setRequiredPermissions(vararg requiredPermissions: PermissionType) {
-        // FIXME: Collections.addAll(this.requiredPermissions, *requiredPermissions)
+        this.requiredPermissions.addAll(requiredPermissions)
     }
 
     protected fun installKits(vararg subKits: Kit) {
-        if (this.kits == null) this.kits = HashSet()
-        this.kits!!.addAll(Arrays.asList(*subKits))
+        this.subKits.addAll(Arrays.asList(*subKits))
     }
 
     fun onStart() {}

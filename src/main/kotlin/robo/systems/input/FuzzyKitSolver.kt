@@ -3,7 +3,6 @@ package robo.systems.input
 import robo.abstracts.Kit
 import robo.models.Param
 import robo.models.Result
-import kotlin.collections.ArrayList
 
 class FuzzyKitSolver(incomingKits: Set<Kit>) {
 
@@ -27,7 +26,7 @@ class FuzzyKitSolver(incomingKits: Set<Kit>) {
             if (foundKits.isEmpty()) paramResults.add(params[i])
             else {
                 kitResult = foundKits[0]
-                kits = ArrayList(kitResult!!.subKits!!)
+                kits = ArrayList(kitResult!!.getSubKits())
             }
         }
     }
