@@ -1,7 +1,7 @@
 package robo.models
 
 
-import robo.utils.Az
+import robo.utils.prLn
 
 class Param {
 
@@ -30,7 +30,7 @@ class Param {
     }
 
     private fun logParseFailure() {
-        Az.prLn(arrayOf(String.format("Failed to parse Param: %s", value)))
+        prLn(String.format("Failed to parse Param: %s", value))
     }
 
 

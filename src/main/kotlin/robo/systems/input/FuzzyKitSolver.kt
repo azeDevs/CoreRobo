@@ -10,8 +10,10 @@ class FuzzyKitSolver(incomingKits: Set<Kit>) {
     private var quickMode: Boolean = false
     private var kits: MutableList<Kit> = ArrayList(incomingKits)
     private var params: MutableList<Param> = ArrayList()
-    var paramResults: MutableList<Param> = ArrayList()
+    private var paramResults: MutableList<Param> = ArrayList()
     private var kitResult: Kit? = null
+
+    fun getParamResults(): MutableList<Param> { return paramResults }
 
     fun solveIntendedKit(incomingParams: List<Param>): Kit? {
         params.addAll(incomingParams)

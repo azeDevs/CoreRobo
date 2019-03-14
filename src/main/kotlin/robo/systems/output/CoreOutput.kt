@@ -3,20 +3,14 @@ package robo.systems.output
 import robo.models.posts.KitPost
 import robo.systems.pulse.Pulse
 import robo.systems.session.CoreSession
-
-import javax.inject.Inject
-import javax.inject.Singleton
-import java.util.ArrayList
-import java.util.Arrays
+import java.util.*
 
 
 /**
  * - configures custom [KitPost] objects
  * - manages outgoing [KitPost] objects
  */
-@Singleton
-class CoreOutput @Inject
-constructor(private val session: CoreSession) : Pulse {
+class CoreOutput(private val session: CoreSession) : Pulse {
 
     private val currentStatus: Status
     private val postHopper: MutableList<KitPost>
@@ -41,7 +35,7 @@ constructor(private val session: CoreSession) : Pulse {
     }
 
     fun setCurrentStatus(status: Status): Boolean {
-        if (status.color != currentStatus.color || status.toString() != currentStatus.formedString) {
+        if (status.getColor() != currentStatus.getColor() || status.toString() != currentStatus.formedString) {
             session.status = status
             return true
         } else

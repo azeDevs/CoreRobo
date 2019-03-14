@@ -9,9 +9,15 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main { java.srcDir file("${projectDir.absolutePath}/src/main/kotlin") }
+    test { java.srcDir file("${projectDir.absolutePath}/src/test/kotlin") }
+}
+
 ext {
     JAVACORD_VERSION = '3.0.3'     // https://github.com/Javacord/Javacord
     JDBI_VERSION = '3.3.0'     // http://jdbi.org/#_introduction_to_jdbi
+    LOGBACK_VERSION =   '1.2.3'     // https://metrics.dropwizard.io/4.0.0/getting-started.html
 }
 
 dependencies {
@@ -19,6 +25,7 @@ dependencies {
     implementation "org.javacord:javacord:${JAVACORD_VERSION}"
     implementation "org.jdbi:jdbi3-core:${JDBI_VERSION}"
     implementation "org.jdbi:jdbi3-bom:${JDBI_VERSION}"
+    implementation "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
     runtimeOnly "org.apache.logging.log4j:log4j-core:2.11.0"
 }
 

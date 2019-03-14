@@ -11,13 +11,13 @@ import robo.models.posts.KitText
 import robo.systems.input.CoreInput
 import robo.systems.output.Status
 import robo.systems.terminal.Log
-import robo.utils.Az
+import robo.utils.getTokenFromFile
+import robo.utils.prLn
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
 
-class ApiJavacord
-constructor() : RoboApi {
+class ApiJavacord : RoboApi {
 
     private var api: DiscordApi? = null
     override var isConnected: Boolean = false
@@ -30,6 +30,35 @@ constructor() : RoboApi {
             api!!.servers.forEach { server -> serverStateMap[server.id] = ServerState(server) }
             return serverStateMap
         }
+
+    override fun connect(keyFilename: String): CompletableFuture<Boolean> {
+        val futureConnection = CompletableFuture<Boolean>()
+
+        DiscordApiBuilder().setToken(getTokenFromFile("keys", keyFilename)).login().whenComplete { api, t0 ->
+            Log.err(t0)
+            this.api = api
+            isConnected = true
+            this.api!!.addLostConnectionListener { event -> isConnected = false }
+            this.api!!.addReconnectListener { event -> isConnected = true }
+            prLn("Connected\n")
+            futureConnection.complete(isConnected)
+        }
+        return futureConnection
+    }
+
+    fun initListeners(kits: Set<Kit>, coreInput: CoreInput) {
+        api!!.addServerMemberJoinListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addServerMemberLeaveListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addUserChangeNicknameListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addUserChangeActivityListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addUserChangeStatusListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addUserChangeNameListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addReactionRemoveListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addReactionAddListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addMessageEditListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addMessageDeleteListener { event -> kits.forEach { m -> m.onEvent(event) } }
+        api!!.addMessageCreateListener { event -> coreInput.onMess(event.message) }
+    }
 
     override var status: Status
         get() {
@@ -64,34 +93,6 @@ constructor() : RoboApi {
                     }
             }
         return futurePost
-    }
-
-    override fun connect(keyFilename: String): CompletableFuture<Boolean> {
-        val futureConnection = CompletableFuture<Boolean>()
-        DiscordApiBuilder().setToken(Az.getTokenFromFile("keys", keyFilename)).login().whenComplete { api, t0 ->
-            Log.err(t0)
-            this.api = api
-            isConnected = true
-            this.api!!.addLostConnectionListener { event -> isConnected = false }
-            this.api!!.addReconnectListener { event -> isConnected = true }
-            Az.prLn(arrayOf("Connected\n"))
-            futureConnection.complete(isConnected)
-        }
-        return futureConnection
-    }
-
-    fun initListeners(kits: Set<Kit>, coreInput: CoreInput) {
-        api!!.addServerMemberJoinListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addServerMemberLeaveListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeNicknameListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeActivityListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeStatusListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeNameListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addReactionRemoveListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addReactionAddListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addMessageEditListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addMessageDeleteListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addMessageCreateListener { event -> coreInput.onMess(event.message) }
     }
 
 }

@@ -1,9 +1,8 @@
 package robo.utils
 
-import java.io.File
+import java.awt.SystemColor.text
 import java.io.FileNotFoundException
 import java.io.FileReader
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Instant
 import java.time.ZoneId
@@ -11,159 +10,171 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.function.Consumer
+
 
 /**
- * The [Az] class is a general utility intended to provide a toolbox of stateless methods.
+ * A shortcut value for providing the directory path to the
+ * application's root directory.
  *
- *
- * Primarily for my own convenience, and secondarily to shorten the names of common things, in an otherwise verbose language. Neat.
+ * @return the Path to the application's root directory
  */
-object Az {
+val pathHome = Paths.get(System.getProperty("user.dir"))
 
-    val ON = "♥"
-    val OFF = "♡"
-
-
-    val pathHome: Path
-        get() = Paths.get(System.getProperty("user.dir"))
-
-    val trueFuture: CompletableFuture<Boolean>
-        get() = CompletableFuture.completedFuture(true)
-
-    fun plural(text: String, size: Int): String {
-        return text + if (size > 1) "s" else ""
-    }
-
-    /**
-     * Az#prLn(String...) is a shortcut method for printing to a row and breaking at the end of the line
-     *
-     * @param text the `String`, or collection of `Strings`, that will be print to the System console
-     */
-    @JvmStatic
-    fun prLn(text: Array<String>) {
-        Arrays.stream(text).forEach { s -> print("\n" + s) }
-    }
-
-    /**
-     * Az#prSp(String...) is a shortcut method for printing to a row in the System console that does not end with a line break, but does end with a space.
-     *
-     * @param text the `String`, or collection of `Strings`, that will be printed to the System console
-     */
-    @JvmStatic
-    fun prSp(text: String) {
-        Arrays.stream(text).forEach { s -> print(String.format("%s ", s)) }
-    }
-
-    /**
-     * Az#print(String...) is a shortcut method for printing to a row in the System console that does not end with a line break
-     *
-     * @param text the `String`, or collection of `Strings`, that will be print to the System console
-     */
-    @JvmStatic
-    fun prnt(text: Array<String>) {
-        Arrays.stream(text).forEach(Consumer<String> { print(it) })
-    }
+/**
+ * A shortcut value for providing a completed CompletableFuture.
+ *
+ * @return a truely completed CompletableFuture
+ */
+val trueFuture = CompletableFuture.completedFuture(true)
 
 
-    /**
-     * Az#input() is used to retrieve a `String` input from the System console
-     *
-     * @return input from the console as a String
-     */
-    fun input(): String {
-        prnt(arrayOf("▶"))
-        val str = Scanner(System.`in`).next()
-        return str
-    }
+/**
+ * Concatenate an "s" to the end of an existing String, based on
+ * the value of an incoming Integer being greater than 1.
+ *
+ * @param text the text to be modified
+ * @param size the value to evaluate
+ * @return the (un)modified text as a String
+ */
+fun plural(text: String, size: Int) = "$text${if (size > 1) "s" else ""}"
 
 
-    /**
-     * Gets an authentication token as a `String` from a remote directory
-     *
-     * @param path  each directory and finally the name of the file that contains the token to be read
-     * @return the token as a `String`
-     */
-    fun getTokenFromFile(vararg path: String): String? {
-        try {
-            val pathToFile = File(Paths.get(System.getProperty("user.dir"), *path).toString())
-            val `in` = Scanner(FileReader(pathToFile))
-            val sb = StringBuilder()
-            while (`in`.hasNext()) sb.append(`in`.next())
-            `in`.close()
-            return sb.toString()
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        }
-
-        return null
-    }
-
-    fun timeMillis(): Long {
-        return System.currentTimeMillis()
-    }
+/**
+ * A shortcut method for printing to a row
+ * and breaking at the end of the line
+ *
+ * @param text the `String`, or collection of `Strings`,
+ * that will be print to the System console
+ */
+fun prLn(vararg text: String) = text.forEach { s -> print("\n$s") }
 
 
-    /**
-     * Format time string.
-     *
-     * @param epochMilli the time as epoch milli
-     * @return the formatted date and time as a `String`
-     */
-    fun time(epochMilli: Long): String {
-        return DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.US)
-            .withZone(ZoneId.systemDefault()).format(
-                Instant.ofEpochMilli(epochMilli)
-            )
-    }
-
-    fun time(): String {
-        return DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.US)
-            .withZone(ZoneId.systemDefault()).format(
-                Instant.ofEpochMilli(timeMillis())
-            )
-    }
+/**
+ * A shortcut method for printing to a row
+ * in the System console that does not end with a line break,
+ * but does end with a space.
+ *
+ * @param text the `String`, or collection of `Strings`,
+ * that will be printed to the System console
+ */
+fun prSp(vararg text: String) = text.forEach { s -> print("$s ") }
 
 
-    /**
-     * Table format a `String`.
-     *
-     * @param width the width of the table
-     * @param text  the text to be formatted
-     * @return the formatted table as a `String`
-     */
-    fun table(width: Int, vararg text: String): String {
-        val column = StringBuilder()
-        for (s in text) {
-            column.append(s)
-            for (n in 0 until width - s.length)
-                column.append(" ")
-        }
-        return column.toString()
-    }
-
-    fun exit(code: Int, text: String) {
-        println("\uD83D\uDED1 $text")
-        System.exit(code)
-    }
-
-    fun addShutdownHook(text: String) {
-        Runtime.getRuntime().addShutdownHook(Thread { println(text) })
-    }
+/**
+ * A shortcut method for printing to a row
+ * in the System console that does not end with a line break
+ *
+ * @param text the `String`, or collection of `Strings`,
+ * that will be print to the System console
+ */
+fun prnt(vararg text: String) = text.forEach { s -> print(s) }
 
 
-    /**
-     * Loop runnable.
-     *
-     * @param interval the interval
-     * @param runnable the runnable
-     */
-    fun loopRun(interval: Long, runnable: Runnable) {
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                runnable.run()
-            }
-        }, 1000, interval)
-    }
-
+/**
+ * Used to retrieve a `String` input from the System console.
+ *
+ * @return input from the console as a String
+ */
+fun input(): String {
+    prnt("▶")
+    return Scanner(System.`in`).next()
 }
+
+
+/**
+ * Gets an authentication token as a `String` from a remote directory.
+ *
+ * @param path  each directory and finally the name of the
+ * file that contains the token to be read
+ * @return the token as a `String`
+ */
+fun getTokenFromFile(vararg path: String): String {
+    val sb = StringBuilder()
+    try {
+        val fileScan = Scanner(FileReader(Paths.get("$pathHome", *path).toFile()))
+        while (fileScan.hasNext()) sb.append(fileScan.next())
+        fileScan.close()
+    } catch (e: FileNotFoundException) { e.printStackTrace() }
+
+    return sb.toString()
+}
+
+
+/**
+ * Convert millis into a formatted time string.
+ *
+ * @param epochMilli the time as epoch milli
+ * @return the formatted date and time as a `String`
+ */
+fun time(epochMilli: Long): String {
+    return DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.US)
+        .withZone(ZoneId.systemDefault()).format(
+            Instant.ofEpochMilli(epochMilli)
+        )
+}
+
+/**
+ * Get a preformatted time string.
+ *
+ * @return the formatted date and time as a `String`
+ */
+fun time() = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.US)
+    .withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(timeMillis()))
+
+
+/**
+ * Get the current date and time in the form of milliseconds.
+ *
+ * @return the time in millis
+ */
+fun timeMillis() = System.currentTimeMillis()
+
+
+/**
+ * Table format a `String`.
+ *
+ * @param width the width of the table
+ * @param text  the text to be formatted
+ * @return the formatted table as a `String`
+ */
+fun table(width: Int, vararg text: String): String {
+    val column = StringBuilder()
+    text.forEach { s ->
+        column.append(s)
+        (0 until width - s.length).forEach { n -> column.append(" ") }
+    }
+    return column.toString()
+}
+
+/**
+ * Exit the application with a Shutdown.
+ *
+ * @param code the exit code to display after Shutdown
+ * @param text the text to display before shutdown
+ */
+fun exit(code: Int, text: String) {
+    println("\uD83D\uDED1 $text")
+    System.exit(code)
+}
+
+/**
+ * Add a Shutdown Hook to the application.
+ *
+ * @param text the text to display before shutdown
+ */
+fun addShutdownHook(text: String) = Runtime.getRuntime().addShutdownHook(Thread { println(text) })
+
+
+/**
+ * Consume a Runnable, and loop it for the interval provided, converted from milliseconds.
+ *
+ * @param interval the interval
+ * @param runnable the runnable
+ */
+fun loopRun(interval: Long, runnable: Runnable) = Timer().schedule(object : TimerTask() {
+    override fun run() {
+        runnable.run()
+    }
+}, 1000, interval)
+
+

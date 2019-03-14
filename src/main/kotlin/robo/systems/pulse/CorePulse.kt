@@ -1,40 +1,24 @@
 package robo.systems.pulse
 
-import robo.utils.Az
+import robo.utils.timeMillis
+import java.util.*
 
-import javax.inject.Inject
-import javax.inject.Singleton
-import java.util.Timer
-import java.util.TimerTask
 
-@Singleton
-class CorePulse @Inject
-constructor() : TimerTask() {
+class CorePulse : TimerTask() {
 
     private var runnable: Runnable? = null
-    var startTime: Long = 0
-        private set
-    var totalPulses: Long = 0
-        private set
-    val downPulses: Long
-    val upPulses: Long
-    val totalTime: Long
-        get() = Az.timeMillis() - startTime
+    private var startTime: Long = 0
+    private var totalPulses: Long = 0
+    val downPulses: Long = 0
+    val upPulses: Long = 0
+    val totalTime: Long = timeMillis() - startTime
 
-    init {
-        this.startTime = 0
-        this.totalPulses = 0
-        this.downPulses = 0
-        this.upPulses = 0
-        Timer().schedule(this, 1000, 1000) // 1000 = 1s or 86400 P/d
-    }
+    init { Timer().schedule(this, 1000, 1000) } // 1000 = 1s or 86400 P/d
 
-    fun onPulse(runnable: Runnable) {
-        this.runnable = runnable
-    }
+    fun onPulse(runnable: Runnable) { this.runnable = runnable }
 
     override fun run() {
-        if (startTime == 0L) this.startTime = Az.timeMillis()
+        if (startTime == 0L) this.startTime = timeMillis()
         if (runnable != null) runnable!!.run()
         totalPulses++
     }

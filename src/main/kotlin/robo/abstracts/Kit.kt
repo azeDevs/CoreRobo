@@ -23,18 +23,9 @@ abstract class Kit(private var title: String) {
     private var query: String = ""
     private var brief: String = ""
     private var guide: String = ""
-    protected val requiredPermissions: Set<PermissionType>
+    protected val requiredPermissions: Set<PermissionType> = HashSet()
     private var kits: MutableSet<Kit> = HashSet()
-    val subKits: Set<Kit>
-        get() = kits
-
-    init {
-        this.query = ""
-        this.brief = ""
-        this.guide = ""
-        this.requiredPermissions = HashSet()
-        this.kits = HashSet()
-    }
+    val subKits: Set<Kit> get() = kits
 
     fun getQuery(): String {
         return query

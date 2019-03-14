@@ -11,11 +11,11 @@ import robo.systems.api.RoboApi
 import robo.systems.input.CoreInput
 import robo.systems.output.Status
 import robo.systems.pulse.Pulse
-
-import javax.inject.Inject
-import javax.inject.Singleton
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.function.Consumer
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 /**
@@ -23,55 +23,46 @@ import java.util.concurrent.CompletableFuture
  * - contains all [UserState]
  * - contains all [ServerState]
  */
-@Singleton
-class CoreSession @Inject
-constructor(private val api: ApiJavacord) : Pulse, RoboApi {
+class CoreSession
+constructor(private val api: ApiJavacord = ApiJavacord()) : Pulse, RoboApi {
 
-    private val kits: MutableSet<Kit>
-    private val users: MutableMap<Long, UserState>
-    private var servers: MutableMap<Long, ServerState>? = null
-    override var status: Status
-        get() = api.status
-        set(status) {
-            api.status = status
-        }
+    private val kits: MutableSet<Kit> = HashSet()
+    private val users: MutableMap<Long, UserState> = HashMap()
+    private var servers: MutableMap<Long, ServerState> = HashMap()
+
     override val isConnected: Boolean
         get() = api.isConnected
 
-    init {
-        this.kits = HashSet()
-        this.users = HashMap()
-        this.servers = HashMap()
-    }
+    override var status: Status
+        get() = api.status
+        set(status) { api.status = status }
 
     override fun onPulse(current: Long) {
         kits.forEach(Consumer<Kit> { it.onPulse() })
         users.values.forEach { userState -> userState.onPulse(current) }
-        servers!!.values.forEach { serverState -> serverState.onPulse(current) }
+        servers.values.forEach { serverState -> serverState.onPulse(current) }
     }
 
     fun getUserState(user: User): UserState {
         if (!users.containsKey(user.id)) users[user.id] = UserState(user)
-        return users[user.id]
+        return users[user.id]!!
     }
 
     fun getServerState(server: Server): ServerState {
-        if (!servers!!.containsKey(server.id)) servers!![server.id] = ServerState(server)
-        return servers!![server.id]
+        if (!servers.containsKey(server.id)) servers[server.id] = ServerState(server)
+        return servers[server.id]!!
     }
 
-    fun getKits(): Set<Kit> {
-        return kits
-    }
+    fun getKits(): Set<Kit> { return kits }
 
-    fun installKits(vararg kits: Kit) {
-        this.kits.addAll(Arrays.asList(*kits))
+    fun installKits(kits: List<Kit>) {
+        this.kits.addAll(kits)
     }
 
     fun init(input: CoreInput) {
         api.initListeners(kits, input)
-        servers = api.serversForSession
-        for (kit in kits) kit.onStart()
+        servers = HashMap(api.serversForSession)
+        kits.forEach(Kit::onStart)
     }
 
     override fun connect(keyFilename: String): CompletableFuture<Boolean> {

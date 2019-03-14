@@ -4,19 +4,19 @@ import robo.abstracts.Form
 import robo.models.posts.KitPost
 import robo.models.posts.KitText
 import robo.models.posts.Mess
+import robo.systems.ResCoreTerminal.Companion.FORM_AUTHOR
+import robo.systems.ResCoreTerminal.Companion.FORM_CHANNEL
+import robo.systems.ResCoreTerminal.Companion.FORM_SERVER
+import robo.systems.ResCoreTerminal.Companion.FORM_START
 import robo.systems.ResIcons
 import robo.systems.data.CoreData
 import robo.systems.output.CoreOutput
 import robo.systems.output.Status
 import robo.systems.pulse.Pulse
-import robo.utils.Az
-
-import javax.inject.Inject
-import javax.inject.Singleton
+import robo.utils.prnt
+import robo.utils.table
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-
-import robo.systems.ResCoreTerminal.*
 
 
 /**
@@ -24,22 +24,15 @@ import robo.systems.ResCoreTerminal.*
  * - manages Logs hopper for bulk posting to [CoreOutput]
  * - manages server coreTerminal settings via [CoreData]
  */
-@Singleton
-class CoreTerminal @Inject
-constructor(private val output: CoreOutput) : Pulse {
-    private val debugMask: Int
-    private val adminMask: Int
-
-    init {
-        this.adminMask = 0
-        this.debugMask = 0
-    }
+class CoreTerminal(private val output: CoreOutput) : Pulse {
+    private val debugMask: Int = 0
+    private val adminMask: Int = 0
 
     override fun onPulse(current: Long) {
         Log.removeAll().forEach { serverID, logs ->
             logs.forEach { log ->
                 if (log.mask <= adminMask) output.queuePost(KitPost(CHAN_LBOX, log.text))
-                if (log.mask <= debugMask) Az.prnt(log.text.toFormlessString() + "\n")
+                if (log.mask <= debugMask) prnt(log.text.toFormlessString() + "\n")
             }
         }
     }
@@ -55,9 +48,9 @@ constructor(private val output: CoreOutput) : Pulse {
         val type = if (mess.isUser) ResIcons.IC_USER else ResIcons.IC_BOT
         Log.add(
             mess.serverID, 0, KitText().form(Form.MD)
-                .add(FORM_AUTHOR, type, Az.table(-4, mess.user.name))
-                .add(FORM_CHANNEL, Az.table(-4, mess.channelAsString))
-                .add(FORM_SERVER, Az.table(-6, mess.serverAsString), time)
+                .add(FORM_AUTHOR, type, table(-4, mess.user.name))
+                .add(FORM_CHANNEL, table(-4, mess.channelAsString))
+                .add(FORM_SERVER, table(-6, mess.serverAsString), time)
                 .form(Form.CODE).add(mess.text).add("\n")
         )
     }
