@@ -72,7 +72,7 @@ abstract class Kit(private var title: String) {
 
     fun onStart() {}
     fun onPulse() {}
-    fun onQuery(params: List<Param>) {}
+    open fun onQuery(params: List<Param>) {}
     fun onEvent(event: ServerMemberJoinEvent) {}
     fun onEvent(event: ServerMemberLeaveEvent) {}
     fun onEvent(event: UserChangeNicknameEvent) {}

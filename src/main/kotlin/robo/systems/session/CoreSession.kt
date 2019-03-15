@@ -23,8 +23,7 @@ import kotlin.collections.HashMap
  * - contains all [UserState]
  * - contains all [ServerState]
  */
-class CoreSession
-constructor(private val api: ApiJavacord = ApiJavacord()) : Pulse, RoboApi {
+class CoreSession(private val api: ApiJavacord = ApiJavacord()) : Pulse, RoboApi {
 
     private val kits: MutableSet<Kit> = HashSet()
     private val users: MutableMap<Long, UserState> = HashMap()

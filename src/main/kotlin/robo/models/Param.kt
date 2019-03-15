@@ -34,7 +34,7 @@ class Param {
 
     // String
 
-    fun toStr(): String? {
+    override fun toString(): String {
         return value
     }
 
@@ -76,7 +76,7 @@ class Param {
     fun toLong(): Long? {
         var result: Long? = null
         try {
-            result = java.lang.Long.valueOf(value.replace("[^\\d]".toRegex(), ""))
+            result = (value.replace("[^\\d]".toRegex(), "")).toLong()
         } catch (e: NumberFormatException) {
             logParseFailure()
         }

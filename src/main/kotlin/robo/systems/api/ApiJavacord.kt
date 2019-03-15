@@ -10,7 +10,7 @@ import robo.models.posts.KitPost
 import robo.models.posts.KitText
 import robo.systems.input.CoreInput
 import robo.systems.output.Status
-import robo.systems.terminal.Log
+import robo.systems.terminal.err
 import robo.utils.getTokenFromFile
 import robo.utils.prLn
 import java.util.*
@@ -35,7 +35,7 @@ class ApiJavacord : RoboApi {
         val futureConnection = CompletableFuture<Boolean>()
 
         DiscordApiBuilder().setToken(getTokenFromFile("keys", keyFilename)).login().whenComplete { api, t0 ->
-            Log.err(t0)
+            err(t0)
             this.api = api
             isConnected = true
             this.api!!.addLostConnectionListener { isConnected = false }
@@ -89,7 +89,7 @@ class ApiJavacord : RoboApi {
                 serverTextChannel
                     .sendMessage(kitPost.kitText.toFormedString()).whenCompleteAsync { message, t ->
                         futurePost.complete(kitPost.setKitMess(message))
-                        Log.err(t)
+                        err(t)
                     }
             }
         return futurePost

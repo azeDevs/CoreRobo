@@ -1,32 +1,57 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.11'
+    id "org.jetbrains.kotlin.jvm" version "1.3.21"
+//    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "java-library"
 }
 
 group 'com.azedevs'
 version '0.1'
 
 repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
     mavenCentral()
 }
 
-sourceSets {
-    main { java.srcDir file("${projectDir.absolutePath}/src/main/kotlin") }
-    test { java.srcDir file("${projectDir.absolutePath}/src/test/kotlin") }
-}
+//sourceSets.main {
+//    withConvention(KotlinSourceSet::class) {
+//        kotlin.srcDirs("src/main/kotlin")
+//    }
+//}
+//sourceSets.test {
+//    withConvention(KotlinSourceSet::class)  {
+//        kotlin.srcDirs("src/test/kotlin")
+//    }
+//}
 
 ext {
-    JAVACORD_VERSION = '3.0.3'     // https://github.com/Javacord/Javacord
-    JDBI_VERSION = '3.3.0'     // http://jdbi.org/#_introduction_to_jdbi
+    JAVACORD_VERSION =  '3.0.3'     // https://github.com/Javacord/Javacord
+    JDBI_VERSION =      '3.3.0'     // http://jdbi.org/#_introduction_to_jdbi
     LOGBACK_VERSION =   '1.2.3'     // https://metrics.dropwizard.io/4.0.0/getting-started.html
+    LOG4J_VERSION =     '2.11.0'    // https://logging.apache.org/log4j/2.x/javadoc.html
+    MOCKITO_VERSION =   '2.23.4'    // https://static.javadoc.io/org.mockito/mockito-core/2.23.4/overview-summary.html
+    JUNIT_VERSION =     '4.12'      // https://junit.org/junit4/
+    MYSQL_VERSION =     '8.0.12'    // http://zetcode.com/db/jdbi/
 }
 
 dependencies {
+    testImplementation "junit:junit:${JUNIT_VERSION}"
+    testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.javacord:javacord:${JAVACORD_VERSION}"
     implementation "org.jdbi:jdbi3-core:${JDBI_VERSION}"
     implementation "org.jdbi:jdbi3-bom:${JDBI_VERSION}"
     implementation "ch.qos.logback:logback-classic:${LOGBACK_VERSION}"
-    runtimeOnly "org.apache.logging.log4j:log4j-core:2.11.0"
+    implementation "org.apache.logging.log4j:log4j-to-slf4j:${LOG4J_VERSION}"
+    implementation "mysql:mysql-connector-java:${MYSQL_VERSION}"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '5.2.1'
+}
+
+jar { from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 compileKotlin {

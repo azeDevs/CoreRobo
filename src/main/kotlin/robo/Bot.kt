@@ -1,9 +1,10 @@
 package robo
 
-import ch.qos.logback.classic.Level
 import robo.abstracts.Kit
 import robo.systems.output.Status
-import robo.systems.terminal.Log
+import robo.systems.terminal.Run
+import robo.systems.terminal.check
+import robo.utils.prLn
 import robo.utils.prSp
 
 
@@ -11,18 +12,7 @@ class Bot(vararg kits: Kit) {
 
     private val core: RoboCore = RoboCore()
 
-    init {
-        Log.init(Level.INFO)
-        this.core.session().installKits(kits.toList())
-    }
-
-    fun startBot(keyFilename: String) {
-        prSp("Initializing Connection ...")
-        core.session().connect(keyFilename).whenComplete { connected, t0 ->
-                Log.err(t0)
-                if (connected) initCoreSystems()
-            }
-        }
+    init { core.session().installKits(kits.toList()) }
 
     private fun initCoreSystems() {
         core.output().setCurrentStatus(Status(0, "Initializing..."))
@@ -35,5 +25,14 @@ class Bot(vararg kits: Kit) {
             core.data().onPulse(core.pulse().totalTime)
             core.terminal().onPulse(core.pulse().totalTime)
         })
+    }
+
+    fun startBot(keyFilename: String) {
+        prSp("Connecting ... ")
+        core.session().connect(keyFilename).whenComplete { connected, t0 -> check(t0, Run {
+            prLn("COMPLETE", "Initializing ... ")
+            initCoreSystems()
+            prLn("COMPLETE")
+        }) }
     }
 }

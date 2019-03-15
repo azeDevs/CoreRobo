@@ -29,7 +29,7 @@ class CoreTerminal(private val output: CoreOutput) : Pulse {
     private val adminMask: Int = 0
 
     override fun onPulse(current: Long) {
-        Log.removeAll().forEach { serverID, logs ->
+        retrieveLogs().forEach { serverID, logs ->
             logs.forEach { log ->
                 if (log.mask <= adminMask) output.queuePost(KitPost(CHAN_LBOX, log.text))
                 if (log.mask <= debugMask) prnt(log.text.toFormlessString() + "\n")
@@ -46,7 +46,7 @@ class CoreTerminal(private val output: CoreOutput) : Pulse {
         if (mess.channelID == CHAN_LBOX) return
         val time = LocalTime.now().format(DateTimeFormatter.ofPattern("h:mm:ss a"))
         val type = if (mess.isUser) ResIcons.IC_USER else ResIcons.IC_BOT
-        Log.add(
+        addLog(
             mess.serverID, 0, KitText().form(Form.MD)
                 .add(FORM_AUTHOR, type, table(-4, mess.user.name))
                 .add(FORM_CHANNEL, table(-4, mess.channelAsString))
