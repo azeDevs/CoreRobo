@@ -12,7 +12,7 @@ class Bot(vararg kits: Kit) {
 
     private val core: RoboCore = RoboCore()
 
-    init { core.session().installKits(kits.toList()) }
+    init { core.session().installKits(listOf(*kits)) }
 
     private fun initCoreSystems() {
         core.output().setCurrentStatus(Status(0, "Initializing..."))
