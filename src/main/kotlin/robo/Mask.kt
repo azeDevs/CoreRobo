@@ -8,9 +8,11 @@ import robo.utils.prLn
 import robo.utils.prSp
 
 
-class Bot(vararg kits: Kit) {
+// The [Mask] tames the [Kit]
 
-    private val core: RoboCore = RoboCore()
+class Mask(vararg kits: Kit) {
+
+    private val core: Core = Core()
 
     init { core.session().installKits(listOf(*kits)) }
 
@@ -29,10 +31,12 @@ class Bot(vararg kits: Kit) {
 
     fun startBot(keyFilename: String) {
         prSp("Connecting ... ")
-        core.session().connect(keyFilename).whenComplete { connected, t0 -> check(t0, Run {
-            prLn("COMPLETE", "Initializing ... ")
-            initCoreSystems()
-            prLn("COMPLETE")
-        }) }
+        core.session().connect(keyFilename).whenComplete { connected, t0 ->
+            check(t0, Run {
+                prLn("COMPLETE", "Initializing ... ")
+                initCoreSystems()
+                prLn("COMPLETE")
+            })
+        }
     }
 }

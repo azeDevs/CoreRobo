@@ -1,16 +1,17 @@
 package bot;
 
-import bot.kits.RolesKit;
 import bot.kits.DiceKit;
-import robo.Bot;
+import bot.kits.RolesKit;
+import robo.Mask;
 
 public class BotMain {
 
     public static void main(String[] args) {
-        Bot bot = new Bot(
+        Mask mask = new Mask(
                 new RolesKit(),
-                new DiceKit());
-        bot.startBot(args[0]);
+                new DiceKit()
+        );
+        mask.startBot(args[0]);
     }
 
 }

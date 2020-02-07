@@ -3,6 +3,7 @@ package robo.systems.input
 import robo.models.Param
 import robo.models.Result
 import java.util.*
+import java.util.Collections.sort
 
 /**
  * FuzzyFinder class for searching through a List of entities.
@@ -13,9 +14,9 @@ class FuzzyFinder<T> (private val lookup: LookupEntity<T>) {
     private val results: MutableList<Result<T>> = ArrayList()
 
     fun getResultsUsing(incomingEntities: List<T>, query: Param): List<Result<T>> {
-        incomingEntities.map { entity -> lookup(entity) }.forEach { result -> if (result != null) results.add(result) }
+        incomingEntities.map { entity -> lookup(entity) }.forEach { result -> results.add(result) }
         val outList = results.map { result -> result.addScore(getScore(query.toString(), result.name)) }
-        Collections.sort(outList) {o1, o2 -> o2.score.toInt() - o1.score.toInt()}
+        sort(outList) {o1, o2 -> o2.score.toInt() - o1.score.toInt()}
         return filterAcceptanceRange(outList).toList()
     }
 

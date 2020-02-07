@@ -29,7 +29,7 @@ class CoreTerminal(private val output: CoreOutput) : Pulse {
     private val adminMask: Int = 0
 
     override fun onPulse(current: Long) {
-        retrieveLogs().forEach { serverID, logs ->
+        retrieveLogs().forEach { (serverID, logs) ->
             logs.forEach { log ->
                 if (log.mask <= adminMask) output.queuePost(KitPost(CHAN_LBOX, log.text))
                 if (log.mask <= debugMask) prnt(log.text.toFormlessString() + "\n")

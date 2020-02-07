@@ -10,7 +10,7 @@ public final class RolesKit extends Kit {
     }
 
     /*
-    // TODO:RolesKit 1. onEvent(ServerMemberJoinEvent event)
+    // RolesKit 1. onEvent(ServerMemberJoinEvent event)
     //
     */
 

@@ -15,21 +15,8 @@ import robo.systems.terminal.CoreTerminal
  * @author  aze
  * @since   0.0.2
  *
-// "You want me to grant the X role to Y? Please confirm."
-//
-// "You want me ot grant the X role to someone, but I'm not sure who, please be more specific"
-//
-// + Loggable interface for passing objects into a single CoreTerminal method for logging
-// + per server admin channel config command, must use CoreData to store configuration
-// + per server admin mask config command
-//
-// RC query abbreviations, display options when multiple available.
-// FuzzyCommand solves partial queries, roles, channels, and users
-// FuzzyTalker removes pleasantries, punctuation, and solves for key words like "me", "I", "you", and "someone"
-// RolesManager, GamesNotifier, XrdDatabase, ClashCircuit
- *
  */
-class RoboCore {
+class Core {
 
     private val apiJavacord: ApiJavacord = ApiJavacord()
 
