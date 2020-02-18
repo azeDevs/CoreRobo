@@ -1,12 +1,13 @@
 package robo.systems.data
 
-import robo.systems.pulse.Pulse
+import robo.Core
+import robo.abstracts.Kit
 
 
 /**
  * Maintains connection to a MySQL database
  */
-class CoreData : Pulse {
+class CoreData(query: String, rc: Core) : Kit(query, rc) {
 
 //    fun putData() {
 //        val form = "jdbc:mysql://104.131.111.9:3306/%s?user=%s&password=%s"

@@ -3,11 +3,10 @@ package robo.systems.input
 import org.javacord.api.entity.message.Message
 import org.javacord.api.entity.user.User
 import org.javacord.api.event.message.MessageCreateEvent
+import robo.Core
+import robo.abstracts.Kit
 import robo.models.ServerState
 import robo.models.posts.Mess
-import robo.systems.pulse.Pulse
-import robo.systems.session.CoreSession
-import robo.systems.terminal.CoreTerminal
 
 
 /**
@@ -15,7 +14,7 @@ import robo.systems.terminal.CoreTerminal
  * 1. Capture any incoming [MessageCreateEvent]
  * 2. Parse the [MessageCreateEvent] into a [Mess] object
  */
-class CoreInput constructor(private val session: CoreSession, private val terminal: CoreTerminal) : Pulse {
+class CoreInput(query: String, rc: Core) : Kit(query, rc) {
 
     fun onMess(message: Message) {
         message.userAuthor.ifPresent { user ->

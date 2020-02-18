@@ -4,11 +4,10 @@ import org.javacord.api.DiscordApi
 import org.javacord.api.DiscordApiBuilder
 import org.javacord.api.entity.activity.ActivityType
 import org.javacord.api.entity.user.UserStatus
-import robo.abstracts.Kit
+import robo.Core
 import robo.models.ServerState
 import robo.models.posts.KitPost
 import robo.models.posts.KitText
-import robo.systems.input.CoreInput
 import robo.systems.output.Status
 import robo.systems.terminal.err
 import robo.utils.getTokenFromFile
@@ -17,12 +16,11 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 
 
-class ApiJavacord : RoboApi {
+abstract class ApiJavacord : RoboApi {
 
     private var api: DiscordApi? = null
     override var isConnected: Boolean = false
         get() = api != null && field
-        private set
 
     val serversForSession: Map<Long, ServerState>
         get() {
@@ -46,18 +44,18 @@ class ApiJavacord : RoboApi {
         return futureConnection
     }
 
-    fun initListeners(kits: Set<Kit>, coreInput: CoreInput) {
-        api!!.addServerMemberJoinListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addServerMemberLeaveListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeNicknameListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeActivityListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeStatusListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addUserChangeNameListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addReactionRemoveListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addReactionAddListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addMessageEditListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addMessageDeleteListener { event -> kits.forEach { m -> m.onEvent(event) } }
-        api!!.addMessageCreateListener { event -> coreInput.onMess(event.message) }
+    fun initListeners(core: Core) {
+        api!!.addServerMemberJoinListener { event -> core.onEvent(event) }
+        api!!.addServerMemberLeaveListener { event -> core.onEvent(event) }
+        api!!.addUserChangeNicknameListener { event -> core.onEvent(event) }
+        api!!.addUserChangeActivityListener { event -> core.onEvent(event) }
+        api!!.addUserChangeStatusListener { event -> core.onEvent(event) }
+        api!!.addUserChangeNameListener { event -> core.onEvent(event) }
+        api!!.addReactionRemoveListener { event -> core.onEvent(event) }
+        api!!.addReactionAddListener { event -> core.onEvent(event) }
+        api!!.addMessageEditListener { event -> core.onEvent(event) }
+        api!!.addMessageDeleteListener { event -> core.onEvent(event) }
+        api!!.addMessageCreateListener { event -> core.onEvent(event) }
     }
 
     override var status: Status
@@ -94,5 +92,18 @@ class ApiJavacord : RoboApi {
             }
         return futurePost
     }
+
+// TODO: WTF ARE THESE FOR?
+//    open fun onEvent(event: ServerMemberJoinEvent) {}
+//    open fun onEvent(event: ServerMemberLeaveEvent) {}
+//    open fun onEvent(event: UserChangeNicknameEvent) {}
+//    open fun onEvent(event: UserChangeActivityEvent) {}
+//    open fun onEvent(event: UserChangeStatusEvent) {}
+//    open fun onEvent(event: UserChangeNameEvent) {}
+//    open fun onEvent(event: ReactionRemoveEvent) {}
+//    open fun onEvent(event: MessageDeleteEvent) {}
+//    open fun onEvent(event: MessageCreateEvent) {}
+//    open fun onEvent(event: MessageEditEvent) {}
+//    open fun onEvent(event: ReactionAddEvent) {}
 
 }

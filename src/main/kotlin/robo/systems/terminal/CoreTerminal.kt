@@ -1,6 +1,8 @@
 package robo.systems.terminal
 
+import robo.Core
 import robo.abstracts.Form
+import robo.abstracts.Kit
 import robo.models.posts.KitPost
 import robo.models.posts.KitText
 import robo.models.posts.Mess
@@ -12,7 +14,6 @@ import robo.systems.ResIcons
 import robo.systems.data.CoreData
 import robo.systems.output.CoreOutput
 import robo.systems.output.Status
-import robo.systems.pulse.Pulse
 import robo.utils.prnt
 import robo.utils.table
 import java.time.LocalTime
@@ -24,22 +25,22 @@ import java.time.format.DateTimeFormatter
  * - manages Logs hopper for bulk posting to [CoreOutput]
  * - manages server coreTerminal settings via [CoreData]
  */
-class CoreTerminal(private val output: CoreOutput) : Pulse {
+class CoreTerminal(query: String, rc: Core) : Kit(query, rc) {
     private val debugMask: Int = 0
     private val adminMask: Int = 0
 
     override fun onPulse(current: Long) {
         retrieveLogs().forEach { (serverID, logs) ->
             logs.forEach { log ->
-                if (log.mask <= adminMask) output.queuePost(KitPost(CHAN_LBOX, log.text))
+                if (log.mask <= adminMask) core.output().queuePost(KitPost(CHAN_LBOX, log.text))
                 if (log.mask <= debugMask) prnt(log.text.toFormlessString() + "\n")
             }
         }
     }
 
     fun logCoreOnline() {
-        output.setCurrentStatus(Status(1, "debug"))
-        output.queuePost(KitPost(CHAN_LBOX, KitText(String.format(FORM_START, "robo-mk0"))))
+        core.output().setCurrentStatus(Status(1, "debug"))
+        core.output().queuePost(KitPost(CHAN_LBOX, KitText(String.format(FORM_START, "robo-mk0"))))
     }
 
     fun log(mess: Mess) {

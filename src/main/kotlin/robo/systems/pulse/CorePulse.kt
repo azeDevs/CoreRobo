@@ -1,10 +1,12 @@
 package robo.systems.pulse
 
+import robo.Core
+import robo.abstracts.Kit
 import robo.utils.timeMillis
 import java.util.*
 
 
-class CorePulse : TimerTask() {
+class CorePulse(query: String, rc: Core) : Kit(query, rc) {
 
     private var runnable: Runnable? = null
     private var startTime: Long = 0

@@ -16,22 +16,20 @@ import robo.systems.terminal.CoreTerminal
  * @since   0.0.2
  *
  */
-class Core {
+class Core : ApiJavacord() {
 
-    private val apiJavacord: ApiJavacord = ApiJavacord()
+    private val session: CoreSession = CoreSession("session", this)
+    private val output: CoreOutput = CoreOutput("output", this)
+    private val terminal: CoreTerminal = CoreTerminal("terminal", this)
+    private val input: CoreInput = CoreInput("input", this)
+    private val data: CoreData = CoreData("data", this)
+    private val pulse: CorePulse = CorePulse("pulse", this)
 
-    private val session: CoreSession = CoreSession(apiJavacord)
-    private val output: CoreOutput = CoreOutput(session)
-    private val terminal: CoreTerminal = CoreTerminal(output)
-    private val input: CoreInput = CoreInput(session, terminal)
-    private val data: CoreData = CoreData()
-    private val pulse: CorePulse = CorePulse()
-
-    internal fun output(): CoreOutput { return output }
-    internal fun input(): CoreInput { return input }
-    internal fun data(): CoreData { return data }
-    internal fun pulse(): CorePulse { return pulse }
-    internal fun session(): CoreSession { return session }
-    internal fun terminal(): CoreTerminal { return terminal }
+    fun output(): CoreOutput = output
+    fun input(): CoreInput = input
+    fun data(): CoreData = data
+    fun pulse(): CorePulse = pulse
+    fun session(): CoreSession = session
+    fun terminal(): CoreTerminal = terminal
 
 }

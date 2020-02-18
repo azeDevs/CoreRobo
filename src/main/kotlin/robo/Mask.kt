@@ -10,16 +10,19 @@ import robo.utils.prSp
 
 // The [Mask] tames the [Kit]
 
-class Mask(vararg kits: Kit) {
+class Mask(vararg incomingKits: Kit) {
 
     private val core: Core = Core()
 
-    init { core.session().installKits(listOf(*kits)) }
+    init {
+        core.initListeners(core)
+        core.session().installKits(setOf(*incomingKits))
+        incomingKits.forEach(Kit::onStart)
+    }
 
     private fun initCoreSystems() {
         core.output().setCurrentStatus(Status(0, "Initializing..."))
         core.terminal().logCoreOnline()
-        core.session().init(core.input())
         core.pulse().onPulse(Runnable {
             core.session().onPulse(core.pulse().totalTime)
             core.output().onPulse(core.pulse().totalTime)
@@ -31,7 +34,7 @@ class Mask(vararg kits: Kit) {
 
     fun startBot(keyFilename: String) {
         prSp("Connecting ... ")
-        core.session().connect(keyFilename).whenComplete { connected, t0 ->
+        core.connect(keyFilename).whenComplete { connected, t0 ->
             check(t0, Run {
                 prLn("COMPLETE", "Initializing ... ")
                 initCoreSystems()
@@ -39,4 +42,7 @@ class Mask(vararg kits: Kit) {
             })
         }
     }
+
+
+
 }

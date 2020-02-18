@@ -1,8 +1,8 @@
 package robo.systems.output
 
+import robo.Core
+import robo.abstracts.Kit
 import robo.models.posts.KitPost
-import robo.systems.pulse.Pulse
-import robo.systems.session.CoreSession
 import java.util.*
 
 
@@ -10,7 +10,7 @@ import java.util.*
  * - configures custom [KitPost] objects
  * - manages outgoing [KitPost] objects
  */
-class CoreOutput(private val session: CoreSession) : Pulse {
+class CoreOutput(query: String, rc: Core) : Kit(query, rc) {
 
     private val currentStatus: Status
     private val postHopper: MutableList<KitPost>
