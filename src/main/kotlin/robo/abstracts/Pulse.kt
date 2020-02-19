@@ -1,4 +1,4 @@
-package robo.systems.pulse
+package robo.abstracts
 
 interface Pulse {
     fun onPulse(current: Long)

@@ -1,8 +1,7 @@
 package robo.systems.terminal
 
-import robo.Core
+import robo.Kit
 import robo.abstracts.Form
-import robo.abstracts.Kit
 import robo.models.posts.KitPost
 import robo.models.posts.KitText
 import robo.models.posts.Mess
@@ -11,8 +10,8 @@ import robo.systems.ResCoreTerminal.Companion.FORM_CHANNEL
 import robo.systems.ResCoreTerminal.Companion.FORM_SERVER
 import robo.systems.ResCoreTerminal.Companion.FORM_START
 import robo.systems.ResIcons
-import robo.systems.data.CoreData
-import robo.systems.output.CoreOutput
+import robo.systems.data.KitData
+import robo.systems.output.KitOutput
 import robo.systems.output.Status
 import robo.utils.prnt
 import robo.utils.table
@@ -22,25 +21,25 @@ import java.time.format.DateTimeFormatter
 
 /**
  * - configures [KitText] objects
- * - manages Logs hopper for bulk posting to [CoreOutput]
- * - manages server coreTerminal settings via [CoreData]
+ * - manages Logs hopper for bulk posting to [KitOutput]
+ * - manages server coreTerminal settings via [KitData]
  */
-class CoreTerminal(query: String, rc: Core) : Kit(query, rc) {
+class KitTerminal : Kit() {
     private val debugMask: Int = 0
     private val adminMask: Int = 0
+
+    override fun onStart() {
+        output.setCurrentStatus(Status(1, "debug"))
+        output.queuePost(KitPost(CHAN_LBOX, KitText(String.format(FORM_START, "robo-mk0"))))
+    }
 
     override fun onPulse(current: Long) {
         retrieveLogs().forEach { (serverID, logs) ->
             logs.forEach { log ->
-                if (log.mask <= adminMask) core.output().queuePost(KitPost(CHAN_LBOX, log.text))
+                if (log.mask <= adminMask) output.queuePost(KitPost(CHAN_LBOX, log.text))
                 if (log.mask <= debugMask) prnt(log.text.toFormlessString() + "\n")
             }
         }
-    }
-
-    fun logCoreOnline() {
-        core.output().setCurrentStatus(Status(1, "debug"))
-        core.output().queuePost(KitPost(CHAN_LBOX, KitText(String.format(FORM_START, "robo-mk0"))))
     }
 
     fun log(mess: Mess) {

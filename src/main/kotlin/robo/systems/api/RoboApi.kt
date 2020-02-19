@@ -7,12 +7,14 @@ import java.util.concurrent.CompletableFuture
 
 interface RoboApi {
 
-    val isConnected: Boolean
+    var isConnected: Boolean
 
     var status: Status
 
     fun send(kitPost: KitPost): CompletableFuture<KitPost>
 
     fun connect(keyFilename: String): CompletableFuture<Boolean>
+
+    fun initListeners()
 
 }

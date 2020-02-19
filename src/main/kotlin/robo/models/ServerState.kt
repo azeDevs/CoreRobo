@@ -1,7 +1,7 @@
 package robo.models
 
 import org.javacord.api.entity.server.Server
-import robo.systems.pulse.Pulse
+import robo.abstracts.Pulse
 
 class ServerState(val server: Server) : Pulse {
 

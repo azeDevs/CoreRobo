@@ -1,6 +1,6 @@
 package robo.systems.input
 
-import robo.abstracts.Kit
+import robo.Kit
 import robo.models.Param
 import robo.models.Result
 

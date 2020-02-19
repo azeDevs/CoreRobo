@@ -2,8 +2,7 @@ package robo.systems.session
 
 import org.javacord.api.entity.server.Server
 import org.javacord.api.entity.user.User
-import robo.Core
-import robo.abstracts.Kit
+import robo.Kit
 import robo.models.ServerState
 import robo.models.UserState
 
@@ -13,14 +12,14 @@ import robo.models.UserState
  * - contains all [UserState]
  * - contains all [ServerState]
  */
-class CoreSession(query: String, rc: Core) : Kit(query, rc) {
+class KitSession : Kit() {
 
     private val users: MutableMap<Long, UserState> = HashMap()
-    private var servers: MutableMap<Long, ServerState> = HashMap()
+    private val servers: MutableMap<Long, ServerState> = HashMap()
 
-    init {
-        servers = HashMap(core.api().serversForSession)
-    }
+    override fun onStart() { servers.putAll(api.serversForSession) }
+
+    fun isConnected() = api.isConnected
 
     fun getUserState(user: User): UserState {
         if (!users.containsKey(user.id)) users[user.id] = UserState(user)

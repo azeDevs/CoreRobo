@@ -25,7 +25,7 @@ repositories {
 //}
 
 ext {
-    JAVACORD_VERSION =  '3.0.3'     // https://github.com/Javacord/Javacord
+    JAVACORD_VERSION =  '3.0.5'     // https://github.com/Javacord/Javacord
     JDBI_VERSION =      '3.3.0'     // http://jdbi.org/#_introduction_to_jdbi
     LOGBACK_VERSION =   '1.2.3'     // https://metrics.dropwizard.io/4.0.0/getting-started.html
     LOG4J_VERSION =     '2.11.0'    // https://logging.apache.org/log4j/2.x/javadoc.html

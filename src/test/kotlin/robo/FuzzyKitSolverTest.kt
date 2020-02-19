@@ -1,11 +1,10 @@
 package robo
 
+import bot.TestKit
 import junit.framework.Assert.assertNotNull
 import org.junit.Test
-import robo.abstracts.Kit
 import robo.models.Param
 import robo.systems.input.FuzzyKitSolver
-import bot.TestKit
 
 
 class FuzzyKitSolverTest : BaseTestCase() {
